@@ -7,6 +7,5 @@ log = __import__('logging').getLogger(__name__)
 
 class RootController(Controller):
     def __default__(self, *args, **kwargs):
-        log.info('-- Request --')
-        return TEMPLATE('index', {'project_name': 'aptgregator'})
+        return TEMPLATE('index', {})
 
