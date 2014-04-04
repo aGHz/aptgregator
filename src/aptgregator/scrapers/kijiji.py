@@ -1,0 +1,59 @@
+# -*- coding: utf-8 -*-
+
+import re
+import requests
+from structominer import Document, StructuredListField, TextField, URLField, IntField
+import urlparse
+
+
+class ConditionalURLField(URLField): _masquerades_ = URLField
+class ConstructedURLField(TextField): _masquerades_ = TextField
+
+class Listings(Document):
+    listings = StructuredListField('//table[contains(@class, "regular-ad")]', structure=dict(
+        id = TextField('.//td[contains(@class, "watchlist")]/div/@data-adid'),
+        name = TextField('.//td[contains(@class, "description")]/a'),
+        link = URLField('.//td[contains(@class, "description")]/a'),
+        price = IntField('.//td[contains(@class, "price")]'),
+        has_image = ConditionalURLField('.//td[contains(@class, "image")]//img'),
+        posted_delay = IntField('.//td[contains(@class, "posted")]'),
+        map_url = ConstructedURLField('.//td[contains(@class, "watchlist")]/div/@data-adid')
+    ))
+
+    @listings.name.pre
+    def _clean_name_fractions(value, **kwargs):
+        return map(lambda s: s.replace(u"½", u'1/2'), value)
+
+    @listings.name.post
+    def _normalize_titles(value, **kwargs):
+        value = value.lower()
+        value = re.sub('(?<=\d)1/2', '-1/2', value) # 31/2 -> 3-1/2
+        value = re.sub('(?<=\d) 1/2', '-1/2', value) # 3 1/2 -> 3-1/2
+        value = re.sub('(?<=\d)[,.]5', '-1/2', value) # 3.5 -> 3-1/2
+        return value
+
+    @listings.link.post
+    def _rebase_links(value, **kwargs):
+        return urlparse.urljoin(url, value)
+
+    @listings.price.pre
+    def _extract_price(value, **kwargs):
+        return value.split(',')[0]
+
+    @listings.has_image.post
+    def _has_image(value, **kwargs):
+        return 'placeholder' not in value
+
+    @listings.posted_delay.pre
+    def _extract_posted_delay_in_minutes(value, **kwargs):
+        _, i, unit = value.rsplit(' ', 2)
+        return int(i) * (60 if unit.startswith('h') else 1)
+
+    @listings.map_url.post
+    def _construct_map_url_from_id(value, **kwargs):
+        return "http://www.kijiji.ca/v-map-view.html?adId={0}&enableSearchNavigationFlag=true".format(value)
+
+
+def listings(url):
+    listings = Listings(requests.get(url).content)
+    return listings['listings']

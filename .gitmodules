@@ -7,3 +7,6 @@
 [submodule "usr/src/marrow.util"]
 	path = usr/src/marrow.util
 	url = https://github.com/marrow/marrow.util.git
+[submodule "usr/src/structominer"]
+	path = usr/src/structominer
+	url = git@github.com:aGHz/structominer.git

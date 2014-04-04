@@ -2,6 +2,7 @@ from sqlalchemy import Column, Integer, String, Unicode, Float, Boolean, DateTim
 from sqlalchemy.ext.declarative import declarative_base
 
 Base = declarative_base()
+metadata = Base.metadata
 
 class Listing(Base):
     __tablename__ = 'listing'

@@ -1,0 +1,21 @@
+{% extends "usr/templates/base.html" %}
+
+{% block head %}
+{% endblock %}
+
+{% block content %}
+<table>
+  {% for listing in kijiji %}
+  <tr>
+    <td>{{ listing.id }}</td>
+    <td>{{ listing.name }}</td>
+    <td>{{ listing.link }}</td>
+    <td>{{ listing.price }}</td>
+    <td>{{ listing.has_image }}</td>
+    <td>{{ listing.posted_delay }}</td>
+    <td>{{ listing.map_url }}</td>
+  </tr>
+  {% endfor %}
+</table>
+{% endblock %}
+
