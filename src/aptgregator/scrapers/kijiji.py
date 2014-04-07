@@ -33,8 +33,8 @@ class Listings(Document):
         return value
 
     @listings.link.post
-    def _rebase_links(value, **kwargs):
-        return urlparse.urljoin(url, value)
+    def _rebase_links(value, document, **kwargs):
+        return urlparse.urljoin(document.url, value)
 
     @listings.price.pre
     def _extract_price(value, **kwargs):
@@ -53,7 +53,11 @@ class Listings(Document):
     def _construct_map_url_from_id(value, **kwargs):
         return "http://www.kijiji.ca/v-map-view.html?adId={0}&enableSearchNavigationFlag=true".format(value)
 
+    def __init__(self, url, *args, **kwargs):
+        self.url = url
+        return super(Listings, self).__init__(*args, **kwargs)
+
 
 def listings(url):
-    listings = Listings(requests.get(url).content)
+    listings = Listings(url, requests.get(url).content)
     return listings['listings']

@@ -7,13 +7,12 @@
 <table>
   {% for listing in kijiji %}
   <tr>
-    <td>{{ listing.id }}</td>
-    <td>{{ listing.name }}</td>
-    <td>{{ listing.link }}</td>
     <td>{{ listing.price }}</td>
-    <td>{{ listing.has_image }}</td>
-    <td>{{ listing.posted_delay }}</td>
-    <td>{{ listing.map_url }}</td>
+    <td>{{ listing.name }}</td>
+    <td><a href="{{ listing.link }}" target="_blank">link</a></td>
+    <td><a href="{{ listing.map_url }}" target="_blank">map</a></td>
+    <td>{{ listing.posted_delay }} min</td>
+    <td>{% if listing.has_image %}pics{% endif %}</td>
   </tr>
   {% endfor %}
 </table>

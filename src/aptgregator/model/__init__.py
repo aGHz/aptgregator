@@ -1,8 +1,11 @@
+from paste.registry import StackedObjectProxy
 from sqlalchemy import Column, Integer, String, Unicode, Float, Boolean, DateTime
 from sqlalchemy.ext.declarative import declarative_base
 
 Base = declarative_base()
 metadata = Base.metadata
+session = StackedObjectProxy()
+
 
 class Listing(Base):
     __tablename__ = 'listing'
