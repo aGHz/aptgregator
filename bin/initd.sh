@@ -1,8 +1,8 @@
 #! /bin/sh
 
-DIR=/Users/tek/src/aptgregator
-USER=__user__
-GROUP=__group__
+DIR=/home/tek/www/apt.aghz.ca
+USER=tek
+GROUP=tek
 
 PIDFILE=$DIR/var/run/production.pid
 LOGFILE=$DIR/var/log/console.log
